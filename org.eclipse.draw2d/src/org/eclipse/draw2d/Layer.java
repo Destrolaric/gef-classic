@@ -33,7 +33,7 @@ public class Layer extends Figure {
 		x = pt.x;
 		y = pt.y;
 		for (int i = 0; i < getChildren().size(); i++) {
-			IFigure child = (IFigure) getChildren().get(i);
+			IFigure child = getChildren().get(i);
 			if (child.containsPoint(x, y))
 				return true;
 		}

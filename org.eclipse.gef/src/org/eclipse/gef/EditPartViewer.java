@@ -10,23 +10,22 @@
  *******************************************************************************/
 package org.eclipse.gef;
 
-import java.beans.PropertyChangeListener;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
-import org.eclipse.draw2d.geometry.Point;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An adapter on an SWT {@link org.eclipse.swt.widgets.Control} that manages the
@@ -278,7 +277,7 @@ public interface EditPartViewer extends org.eclipse.jface.viewers.ISelectionProv
 	 * 
 	 * @return the registry map
 	 */
-	Map getEditPartRegistry();
+	Map<Object,Object> getEditPartRegistry();
 
 	/**
 	 * Returns the <i>focus</i> <code>EditPart</code>. Focus refers to keyboard
@@ -396,7 +395,7 @@ public interface EditPartViewer extends org.eclipse.jface.viewers.ISelectionProv
 	 * 
 	 * @return the visual part map
 	 */
-	Map getVisualPartMap();
+	Map<IFigure, EditPart> getVisualPartMap();
 
 	/**
 	 * Used for accessibility purposes.

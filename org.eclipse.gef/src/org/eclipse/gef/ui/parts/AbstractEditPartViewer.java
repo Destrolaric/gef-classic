@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.gef.ui.parts;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.*;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.util.TransferDragSourceListener;
+import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
@@ -28,29 +30,9 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.util.TransferDragSourceListener;
-import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-
-import org.eclipse.draw2d.geometry.Point;
-
-import org.eclipse.gef.AccessibleEditPart;
-import org.eclipse.gef.EditDomain;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
-import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.KeyHandler;
-import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.SelectionManager;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.*;
 
 /**
  * The base implementation for EditPartViewer.
@@ -78,7 +60,7 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 	 * 
 	 * @deprecated
 	 */
-	protected List selectionListeners = new ArrayList(1);
+	protected final List<ISelectionChangedListener> selectionListeners = new ArrayList<>(1);
 
 	/**
 	 * The editpart specifically set to have focus. Note that if this value is
@@ -91,9 +73,9 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 	protected EditPart focusPart;
 
 	private EditPartFactory factory;
-	private Map mapIDToEditPart = new HashMap();
-	private Map mapVisualToEditPart = new HashMap();
-	private Map properties;
+	private Map<Object, Object> mapIDToEditPart = new HashMap<>();
+	private Map<IFigure, EditPart> mapVisualToEditPart = new HashMap<>();
+	private Map<String, Object> properties;
 	private Control control;
 	private ResourceManager resources;
 	private EditDomain domain;
@@ -125,11 +107,7 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 		if (selectionModel != null)
 			selectionModel.internalUninstall();
 		selectionModel = model;
-		model.internalInitialize(this, selection, new Runnable() {
-			public void run() {
-				fireSelectionChanged();
-			}
-		});
+		model.internalInitialize(this, selection, this::fireSelectionChanged);
 		if (getControl() != null)
 			model.internalHookControl(getControl());
 	}
@@ -236,10 +214,11 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 	 * Fires selection changed to the registered listeners at the time called.
 	 */
 	protected void fireSelectionChanged() {
-		Object listeners[] = selectionListeners.toArray();
+		ISelectionChangedListener[] listeners = selectionListeners.toArray(new ISelectionChangedListener[0]);
 		SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
-		for (int i = 0; i < listeners.length; i++)
-			((ISelectionChangedListener) listeners[i]).selectionChanged(event);
+		for (ISelectionChangedListener listener : listeners) {
+			listener.selectionChanged(event);
+		}
 	}
 
 	/**
@@ -330,7 +309,7 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 	/**
 	 * @see EditPartViewer#getEditPartRegistry()
 	 */
-	public Map getEditPartRegistry() {
+	public Map<Object, Object> getEditPartRegistry() {
 		return mapIDToEditPart;
 	}
 
@@ -412,7 +391,7 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 	/**
 	 * @see EditPartViewer#getVisualPartMap()
 	 */
-	public Map getVisualPartMap() {
+	public Map<IFigure, EditPart> getVisualPartMap() {
 		return mapVisualToEditPart;
 	}
 
@@ -425,11 +404,7 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 		Control control = getControl();
 		Assert.isTrue(control != null);
 		getSelectionManager().internalHookControl(control);
-		control.addDisposeListener(disposeListener = new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				handleDispose(e);
-			}
-		});
+		control.addDisposeListener(disposeListener = this::handleDispose);
 		if (getRootEditPart() != null)
 			getRootEditPart().activate();
 		refreshDragSourceAdapter();
@@ -692,7 +667,7 @@ public abstract class AbstractEditPartViewer implements EditPartViewer {
 	 */
 	public void setProperty(String key, Object value) {
 		if (properties == null)
-			properties = new HashMap();
+			properties = new HashMap<>();
 		Object old;
 		if (value == null)
 			old = properties.remove(key);

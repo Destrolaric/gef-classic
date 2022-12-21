@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.Iterator;
-
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.Iterator;
 
 /**
  * A Clickable responds to mouse clicks in some way (determined by a
@@ -358,7 +358,7 @@ public class Clickable extends Figure {
 	protected void setContents(IFigure contents) {
 		setLayoutManager(new StackLayout());
 		if (getChildren().size() > 0)
-			remove((IFigure) getChildren().get(0));
+			remove(getChildren().get(0));
 		add(contents);
 	}
 

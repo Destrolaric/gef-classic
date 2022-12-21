@@ -10,30 +10,15 @@
  *******************************************************************************/
 package org.eclipse.gef.editparts;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
-
 import org.eclipse.draw2d.EventListenerList;
-
-import org.eclipse.gef.AccessibleEditPart;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
-import org.eclipse.gef.EditPartListener;
-import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.Request;
-import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.RootEditPart;
+import org.eclipse.gef.*;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.SelectionEditPolicy;
+
+import java.util.*;
 
 /**
  * The baseline implementation for the {@link EditPart} interface.
@@ -80,7 +65,7 @@ public abstract class AbstractEditPart implements EditPart, RequestConstants, IA
 	/**
 	 * The List of children EditParts
 	 */
-	protected List children;
+	protected List<EditPart> children;
 
 	/**
 	 * call getEventListeners(Class) instead.
@@ -152,7 +137,7 @@ public abstract class AbstractEditPart implements EditPart, RequestConstants, IA
 
 		activateEditPolicies();
 
-		List c = getChildren();
+		List<EditPart> c = getChildren();
 		for (int i = 0; i < c.size(); i++)
 			((EditPart) c.get(i)).activate();
 
@@ -442,7 +427,7 @@ public abstract class AbstractEditPart implements EditPart, RequestConstants, IA
 	 * @see IAdaptable#getAdapter(java.lang.Class)
 	 */
 	@Override
-	public <T> T getAdapter(final Class<T> key) {
+	public <T> T getAdapter(Class<T> key) {
 		if (AccessibleEditPart.class == key)
 			return key.cast(getAccessibleEditPart());
 		return Platform.getAdapterManager().getAdapter(this, key);
@@ -451,9 +436,9 @@ public abstract class AbstractEditPart implements EditPart, RequestConstants, IA
 	/**
 	 * @see org.eclipse.gef.EditPart#getChildren()
 	 */
-	public List getChildren() {
+	public List<EditPart> getChildren() {
 		if (children == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		return children;
 	}
 
@@ -493,7 +478,7 @@ public abstract class AbstractEditPart implements EditPart, RequestConstants, IA
 	 * @param clazz the Listener type over which to iterate
 	 * @return Iterator
 	 */
-	protected final Iterator getEventListeners(Class clazz) {
+	protected final Iterator<EditPartListener> getEventListeners(Class<?> clazz) {
 		return eventListeners.getListeners(clazz);
 	}
 

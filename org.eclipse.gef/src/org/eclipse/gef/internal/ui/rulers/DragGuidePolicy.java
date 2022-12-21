@@ -10,23 +10,22 @@
  *******************************************************************************/
 package org.eclipse.gef.internal.ui.rulers;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.UnexecutableCommand;
-import org.eclipse.gef.editpolicies.GraphicalEditPolicy;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.editpolicies.GraphicalEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Pratik Shah
@@ -199,19 +198,19 @@ public class DragGuidePolicy extends GraphicalEditPolicy {
 			// add the placeholder guide figure to the ruler
 			getHostFigure().getParent().add(getDummyGuideFigure(), 0);
 			((GraphicalEditPart) getHost().getParent()).setLayoutConstraint(getHost(), getDummyGuideFigure(),
-					Integer.valueOf(getGuideEditPart().getZoomedPosition()));
+				getGuideEditPart().getZoomedPosition());
 			getDummyGuideFigure().setBounds(getHostFigure().getBounds());
 			getDummyGuideFigure().validate();
 			// add the invisible placeholder line figure to the primary viewer
 			getGuideEditPart().getGuideLayer().add(getDummyLineFigure(), 0);
 			getGuideEditPart().getGuideLayer().setConstraint(getDummyLineFigure(),
-					Boolean.valueOf(getGuideEditPart().isHorizontal()));
+				getGuideEditPart().isHorizontal());
 			getDummyLineFigure().setBounds(getGuideEditPart().getGuideLineFigure().getBounds());
 			getDummyLineFigure().validate();
 			// move the guide being dragged to the last index so that it's drawn
 			// on
 			// top of other guides
-			List children = getHostFigure().getParent().getChildren();
+			List<IFigure> children = getHostFigure().getParent().getChildren();
 			children.remove(getHostFigure());
 			children.add(getHostFigure());
 		}

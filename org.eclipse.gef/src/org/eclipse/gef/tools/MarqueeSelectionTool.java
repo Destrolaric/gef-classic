@@ -10,37 +10,16 @@
  *******************************************************************************/
 package org.eclipse.gef.tools;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import org.eclipse.draw2d.*;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.*;
+import org.eclipse.gef.util.EditPartUtilities;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Display;
 
-import org.eclipse.jface.viewers.StructuredSelection;
-
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Connection;
-import org.eclipse.draw2d.Cursors;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FigureUtilities;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
-
-import org.eclipse.gef.ConnectionEditPart;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.KeyHandler;
-import org.eclipse.gef.Request;
-import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.util.EditPartUtilities;
+import java.util.*;
 
 /**
  * A Tool which selects multiple {@link EditPart}s inside a rectangular area of
@@ -332,7 +311,7 @@ public class MarqueeSelectionTool extends AbstractTool {
 	 */
 	private Collection calculateSecondaryMarqueeSelectedEditParts(Collection directlyMarqueeSelectedEditParts) {
 
-		Collection editPartsToProcess = new HashSet();
+		Collection<EditPart> editPartsToProcess = new HashSet<>();
 		for (Iterator iterator = directlyMarqueeSelectedEditParts.iterator(); iterator.hasNext();) {
 			GraphicalEditPart marqueeSelectedEditPart = (GraphicalEditPart) iterator.next();
 			editPartsToProcess.addAll(marqueeSelectedEditPart.getSourceConnections());

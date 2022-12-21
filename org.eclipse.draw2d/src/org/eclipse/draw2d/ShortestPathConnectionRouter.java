@@ -10,20 +10,14 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.graph.Path;
 import org.eclipse.draw2d.graph.ShortestPathRouter;
+
+import java.util.*;
 
 /**
  * Routes multiple connections around the children of a given container figure.
@@ -100,7 +94,7 @@ public final class ShortestPathConnectionRouter extends AbstractRouter {
 	private void hookAll() {
 		figuresToBounds = new HashMap();
 		for (int i = 0; i < container.getChildren().size(); i++)
-			addChild((IFigure) container.getChildren().get(i));
+			addChild(container.getChildren().get(i));
 		container.addLayoutListener(listener);
 	}
 

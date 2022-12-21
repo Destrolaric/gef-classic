@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.draw2d.text;
 
+import org.eclipse.draw2d.IFigure;
+
 import java.util.List;
 
 /**
@@ -85,7 +87,7 @@ public class InlineFlowLayout extends FlowContainerLayout {
 	 * @see FlowContext#getWidthLookahead(FlowFigure, int[])
 	 */
 	public void getWidthLookahead(FlowFigure child, int result[]) {
-		List children = getFlowFigure().getChildren();
+		List<IFigure> children = getFlowFigure().getChildren();
 		int index = -1;
 		if (child != null)
 			index = children.indexOf(child);

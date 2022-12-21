@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.List;
-
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.List;
 
 class FreeformHelper implements FreeformListener {
 
@@ -35,9 +35,8 @@ class FreeformHelper implements FreeformListener {
 		if (freeformExtent != null)
 			return freeformExtent;
 		Rectangle r;
-		List children = host.getChildren();
-		for (int i = 0; i < children.size(); i++) {
-			IFigure child = (IFigure) children.get(i);
+		List<IFigure> children = host.getChildren();
+		for (IFigure child : children) {
 			if (child instanceof FreeformFigure)
 				r = ((FreeformFigure) child).getFreeformExtent();
 			else
@@ -86,9 +85,8 @@ class FreeformHelper implements FreeformListener {
 		host.setBounds(bounds);
 		bounds = bounds.getCopy();
 		host.translateFromParent(bounds);
-		List children = host.getChildren();
-		for (int i = 0; i < children.size(); i++) {
-			IFigure child = (IFigure) children.get(i);
+		List<IFigure> children = host.getChildren();
+		for (IFigure child : children) {
 			if (child instanceof FreeformFigure)
 				((FreeformFigure) child).setFreeformBounds(bounds);
 		}

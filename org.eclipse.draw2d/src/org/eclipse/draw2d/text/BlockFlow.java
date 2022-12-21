@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.draw2d.text;
 
-import java.util.List;
-
-import org.eclipse.swt.SWT;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
+
+import java.util.List;
 
 /**
  * A <code>FlowFigure</code> represented by a single {@link BlockBox} containing
@@ -89,7 +88,7 @@ public class BlockFlow extends FlowFigure {
 			FlowBorder border = (FlowBorder) getBorder();
 			return border.getBottomMargin();
 		}
-		List children = getChildren();
+		List<IFigure> children = getChildren();
 		int childIndex = children.size() - 1;
 		if (childIndex >= 0 && children.get(childIndex) instanceof BlockFlow) {
 			margin = Math.max(margin, ((BlockFlow) children.get(childIndex)).getBottomMargin());
@@ -177,7 +176,7 @@ public class BlockFlow extends FlowFigure {
 			FlowBorder border = (FlowBorder) getBorder();
 			return border.getTopMargin();
 		}
-		List children = getChildren();
+		List<IFigure> children = getChildren();
 		if (children.size() > 0 && children.get(0) instanceof BlockFlow) {
 			margin = Math.max(margin, ((BlockFlow) children.get(0)).getTopMargin());
 		}

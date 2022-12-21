@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.gef.internal.ui.rulers;
 
-import java.util.List;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.List;
 
 /**
  * A custom layout manager for rulers. It is not meant to be used externally or
@@ -46,12 +46,11 @@ public class RulerLayout extends XYLayout {
 	 * @see org.eclipse.draw2d.LayoutManager#layout(org.eclipse.draw2d.IFigure)
 	 */
 	public void layout(IFigure container) {
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		Rectangle rulerSize = container.getClientArea();
-		for (int i = 0; i < children.size(); i++) {
-			IFigure child = (IFigure) children.get(i);
+		for (IFigure child : children) {
 			Dimension childSize = child.getPreferredSize();
-			int position = ((Integer) getConstraint(child)).intValue();
+			int position = (Integer) getConstraint(child);
 			if (((RulerFigure) container).isHorizontal()) {
 				childSize.height = rulerSize.height - 1;
 				Rectangle.SINGLETON.setLocation(position - (childSize.width / 2), rulerSize.y);

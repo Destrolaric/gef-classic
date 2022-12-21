@@ -10,44 +10,20 @@
  *******************************************************************************/
 package org.eclipse.gef.internal.ui.palette.editparts;
 
-import java.util.Iterator;
-import java.util.List;
-
+import org.eclipse.draw2d.*;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.internal.ui.palette.PaletteColorUtil;
+import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
+import org.eclipse.gef.ui.palette.editparts.PaletteToolbarLayout;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-import org.eclipse.draw2d.Animation;
-import org.eclipse.draw2d.Border;
-import org.eclipse.draw2d.BorderLayout;
-import org.eclipse.draw2d.ButtonModel;
-import org.eclipse.draw2d.ChangeEvent;
-import org.eclipse.draw2d.ChangeListener;
-import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.CompoundBorder;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FigureUtilities;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LayoutManager;
-import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.MouseMotionListener;
-import org.eclipse.draw2d.SchemeBorder;
-import org.eclipse.draw2d.ScrollPane;
-import org.eclipse.draw2d.Toggle;
-import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.draw2d.geometry.Rectangle;
-
-import org.eclipse.gef.internal.ui.palette.PaletteColorUtil;
-import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
-import org.eclipse.gef.ui.palette.editparts.PaletteToolbarLayout;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Pratik Shah
@@ -344,11 +320,11 @@ public class DrawerFigure extends Figure {
 		 * (in which case, the scrollbars cover up the entire available space).
 		 */
 		if (isExpanded()) {
-			List children = getContentPane().getChildren();
+			List<IFigure> children = getContentPane().getChildren();
 			if (!children.isEmpty()) {
 				Dimension result = collapseToggle.getPreferredSize(wHint, hHint).getCopy();
 				result.height += getContentPane().getInsets().getHeight();
-				IFigure child = (IFigure) children.get(0);
+				IFigure child = children.get(0);
 				result.height += Math.min(80, child.getPreferredSize(wHint, -1).height + 9);
 				return result.intersect(getPreferredSize(wHint, hHint));
 			}
@@ -375,7 +351,8 @@ public class DrawerFigure extends Figure {
 				remove(scrollpane);
 
 			// collapse all pinnable palette stack children that aren't pinned
-			for (Iterator iterator = getContentPane().getChildren().iterator(); iterator.hasNext();) {
+			for (Iterator<IFigure> iterator = getContentPane().getChildren().iterator(); iterator
+				.hasNext();) {
 				Object child = iterator.next();
 				if (child instanceof PinnablePaletteStackFigure
 						&& !((PinnablePaletteStackFigure) child).isPinnedOpen()) {

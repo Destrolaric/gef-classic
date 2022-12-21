@@ -11,13 +11,11 @@
  */
 package org.eclipse.gef.util;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
+
+import java.util.*;
 
 /**
  * Utility class comprising functions related to {@link EditPart}s
@@ -44,11 +42,11 @@ public final class EditPartUtilities {
 	 * 
 	 * @return the transitive child edit part set
 	 */
-	public static LinkedHashSet getAllChildren(GraphicalEditPart parentEditPart) {
-		LinkedHashSet transitiveChildren = new LinkedHashSet();
-		List children = parentEditPart.getChildren();
+	public static Set<EditPart> getAllChildren(GraphicalEditPart parentEditPart) {
+		Set<EditPart> transitiveChildren = new LinkedHashSet<>();
+		List<EditPart> children = parentEditPart.getChildren();
 		transitiveChildren.addAll(children);
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+		for (Iterator<EditPart> iterator = children.iterator(); iterator.hasNext();) {
 			GraphicalEditPart child = (GraphicalEditPart) iterator.next();
 			transitiveChildren.addAll(getAllChildren(child));
 		}
@@ -62,13 +60,17 @@ public final class EditPartUtilities {
 	 * 
 	 * @return the transitive nested connection edit parts
 	 */
-	public static HashSet getAllNestedConnectionEditParts(GraphicalEditPart graphicalEditPart) {
-		HashSet transitiveConnections = new HashSet();
-		HashSet transitiveChildren = getAllChildren(graphicalEditPart);
-		for (Iterator iterator = transitiveChildren.iterator(); iterator.hasNext();) {
-			GraphicalEditPart child = (GraphicalEditPart) iterator.next();
-			transitiveConnections.addAll(child.getSourceConnections());
-			transitiveConnections.addAll(child.getTargetConnections());
+	public static Set<ConnectionEditPart> getAllNestedConnectionEditParts(GraphicalEditPart graphicalEditPart) {
+		Set<ConnectionEditPart> transitiveConnections = new HashSet<>();
+		Set<EditPart> transitiveChildren = getAllChildren(graphicalEditPart);
+		for (Iterator<EditPart> iterator = transitiveChildren.iterator(); iterator
+			.hasNext();) {
+			EditPart child = iterator.next();
+			if (child instanceof GraphicalEditPart) {
+				GraphicalEditPart gep = (GraphicalEditPart)child;
+				transitiveConnections.addAll(gep.getSourceConnections());
+				transitiveConnections.addAll(gep.getTargetConnections());
+			}
 		}
 		return transitiveConnections;
 	}
@@ -82,11 +84,11 @@ public final class EditPartUtilities {
 	 * @return the set of child <code>ConnectionEditPart</code>s for the given
 	 *         <code>GraphicalEditPart</code>
 	 */
-	public static HashSet getNestedConnectionEditParts(GraphicalEditPart graphicalEditPart) {
-		HashSet edges = new HashSet();
-		List children = graphicalEditPart.getChildren();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-			Object child = iterator.next();
+	public static Set<ConnectionEditPart> getNestedConnectionEditParts(GraphicalEditPart graphicalEditPart) {
+		Set<ConnectionEditPart> edges = new HashSet<>();
+		List<EditPart> children = graphicalEditPart.getChildren();
+		for (Iterator<EditPart> iterator = children.iterator(); iterator.hasNext();) {
+			EditPart child = iterator.next();
 			if (child instanceof GraphicalEditPart) {
 				GraphicalEditPart childEditPart = (GraphicalEditPart) child;
 				edges.addAll(childEditPart.getSourceConnections());

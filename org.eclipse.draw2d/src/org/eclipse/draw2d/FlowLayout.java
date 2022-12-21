@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Lays out children in rows or columns, wrapping when the current row/column is
@@ -132,7 +132,7 @@ public class FlowLayout extends OrderedLayout {
 		// The preferred dimension that is to be calculated and returned
 		Dimension prefSize = new Dimension();
 
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		int width = 0;
 		int height = 0;
 		IFigure child;
@@ -140,7 +140,7 @@ public class FlowLayout extends OrderedLayout {
 
 		// Build the sizes for each row, and update prefSize accordingly
 		for (int i = 0; i < children.size(); i++) {
-			child = (IFigure) children.get(i);
+			child = children.get(i);
 			childSize = transposer.t(getChildSize(child, wHint, hHint));
 			if (i == 0) {
 				width = childSize.width;
@@ -282,7 +282,7 @@ public class FlowLayout extends OrderedLayout {
 		Rectangle relativeArea = parent.getClientArea();
 		data.area = transposer.t(relativeArea);
 
-		Iterator iterator = parent.getChildren().iterator();
+		Iterator<IFigure> iterator = parent.getChildren().iterator();
 		int dx;
 
 		// Calculate the hints to be passed to children
@@ -296,7 +296,7 @@ public class FlowLayout extends OrderedLayout {
 		initVariables(parent);
 		initRow();
 		while (iterator.hasNext()) {
-			IFigure f = (IFigure) iterator.next();
+			IFigure f = iterator.next();
 			Dimension pref = transposer.t(getChildSize(f, wHint, hHint));
 			Rectangle r = new Rectangle(0, 0, pref.width, pref.height);
 
@@ -327,8 +327,8 @@ public class FlowLayout extends OrderedLayout {
 	 * @since 2.0
 	 */
 	protected void layoutRow(IFigure parent) {
-		int majorAdjustment = 0;
-		int minorAdjustment = 0;
+		int majorAdjustment;
+		int minorAdjustment;
 		int correctMajorAlignment = getMajorAlignment();
 		int correctMinorAlignment = getMinorAlignment();
 

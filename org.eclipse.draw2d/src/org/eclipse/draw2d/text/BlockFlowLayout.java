@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.draw2d.text;
 
-import java.util.List;
-
-import org.eclipse.swt.SWT;
-
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.swt.SWT;
+
+import java.util.List;
 
 /**
  * The layout for {@link BlockFlow} figures.
@@ -138,9 +138,8 @@ public class BlockFlowLayout extends FlowContainerLayout {
 
 		if (blockInvalid) {
 			blockInvalid = false;
-			List v = getFlowFigure().getChildren();
-			for (int i = 0; i < v.size(); i++)
-				((FlowFigure) v.get(i)).postValidate();
+			List<IFigure> v = getFlowFigure().getChildren();
+			for (IFigure child : v) ((FlowFigure) child).postValidate();
 		}
 	}
 
@@ -190,7 +189,7 @@ public class BlockFlowLayout extends FlowContainerLayout {
 	 * @see FlowContext#getWidthLookahead(FlowFigure, int[])
 	 */
 	public void getWidthLookahead(FlowFigure child, int result[]) {
-		List children = getFlowFigure().getChildren();
+		List<IFigure> children = getFlowFigure().getChildren();
 		int index = -1;
 		if (child != null)
 			index = children.indexOf(child);

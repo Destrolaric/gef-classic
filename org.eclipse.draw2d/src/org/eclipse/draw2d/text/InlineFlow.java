@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.draw2d.text;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.eclipse.swt.SWT;
-
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A <code>FlowFigure</code> represented by multiple <code>LineBox</code>
@@ -46,9 +45,8 @@ public class InlineFlow extends FlowFigure {
 	 * @see org.eclipse.draw2d.text.FlowFigure#addLeadingWordRequirements(int[])
 	 */
 	public boolean addLeadingWordRequirements(int[] width) {
-		Iterator iter = getChildren().iterator();
-		while (iter.hasNext()) {
-			if (((FlowFigure) iter.next()).addLeadingWordRequirements(width))
+		for (IFigure iFigure : getChildren()) {
+			if (((FlowFigure) iFigure).addLeadingWordRequirements(width))
 				return true;
 		}
 		return false;

@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.draw2d.examples.tree;
 
-import java.util.List;
-
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Transposer;
+
+import java.util.List;
 
 /**
  * Performs a layout on a container containing {@link AbstractBranch} figures.
@@ -36,10 +36,10 @@ public class TreeLayout extends AbstractLayout {
 	 */
 	protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
 		container.validate();
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		Rectangle result = new Rectangle().setLocation(container.getClientArea().getLocation());
 		for (int i = 0; i < children.size(); i++)
-			result.union(((IFigure) children.get(i)).getBounds());
+			result.union(children.get(i).getBounds());
 		result.resize(container.getInsets().getWidth(), container.getInsets().getHeight());
 		return result.getSize();
 	}
@@ -84,7 +84,7 @@ public class TreeLayout extends AbstractLayout {
 		TreeRoot root = ((TreeBranch) container.getParent()).getRoot();
 		Transposer transposer = root.getTransposer();
 		int gap = root.getMinorSpacing();
-		List subtrees = container.getChildren();
+		List<IFigure> subtrees = container.getChildren();
 		TreeBranch subtree;
 		int previousSubtreeDepth = 0;
 		int rightContour[] = null;

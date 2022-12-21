@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.draw2d.examples.tree;
 
+import org.eclipse.draw2d.*;
+import org.eclipse.draw2d.examples.AbstractExample;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,17 +19,8 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Scale;
-
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.examples.AbstractExample;
+import org.eclipse.swt.widgets.*;
 
 /**
  * @author hudsonr Created on Apr 18, 2003
@@ -86,7 +79,7 @@ public class TreeExample extends AbstractExample {
 		IFigure contents = parent.getContentsPane();
 		if (contents.getChildren().isEmpty())
 			return;
-		contents.remove((IFigure) contents.getChildren().get(contents.getChildren().size() - 1));
+		contents.remove(contents.getChildren().get(contents.getChildren().size() - 1));
 	}
 
 	void doExpandCollapse() {

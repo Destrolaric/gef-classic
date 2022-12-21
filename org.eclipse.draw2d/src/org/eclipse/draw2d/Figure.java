@@ -11,14 +11,7 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
+import org.eclipse.draw2d.geometry.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -26,11 +19,9 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.draw2d.geometry.Translatable;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.*;
 
 /**
  * The base implementation for graphical figures.
@@ -78,7 +69,7 @@ public class Figure implements IFigure {
 	private PropertyChangeSupport propertyListeners;
 	private EventListenerList eventListeners = new EventListenerList();
 
-	private List children = Collections.EMPTY_LIST;
+	private List<IFigure> children = Collections.emptyList();
 
 	/**
 	 * This Figure's preferred size.
@@ -136,7 +127,7 @@ public class Figure implements IFigure {
 	 */
 	public void add(IFigure figure, Object constraint, int index) {
 		if (children == Collections.EMPTY_LIST)
-			children = new ArrayList(2);
+			children = new ArrayList<>(2);
 		if (index < -1 || index > children.size())
 			throw new IndexOutOfBoundsException("Index does not exist"); //$NON-NLS-1$
 
@@ -271,8 +262,9 @@ public class Figure implements IFigure {
 		if (getFlag(FLAG_REALIZED))
 			throw new RuntimeException("addNotify() should not be called multiple times"); //$NON-NLS-1$
 		setFlag(FLAG_REALIZED, true);
-		for (int i = 0; i < children.size(); i++)
-			((IFigure) children.get(i)).addNotify();
+		for (IFigure child : children) {
+			child.addNotify();
+		}
 	}
 
 	/**
@@ -343,7 +335,7 @@ public class Figure implements IFigure {
 		IFigure fig;
 		for (int i = children.size(); i > 0;) {
 			i--;
-			fig = (IFigure) children.get(i);
+			fig = children.get(i);
 			if (fig.isVisible()) {
 				fig = fig.findFigureAt(x, y, search);
 				if (fig != null)
@@ -435,7 +427,7 @@ public class Figure implements IFigure {
 		IFigure fig;
 		for (int i = children.size(); i > 0;) {
 			i--;
-			fig = (IFigure) children.get(i);
+			fig = children.get(i);
 			if (fig.isVisible() && fig.isEnabled()) {
 				if (fig.containsPoint(PRIVATE_POINT.x, PRIVATE_POINT.y)) {
 					fig = fig.findMouseEventTargetAt(PRIVATE_POINT.x, PRIVATE_POINT.y);
@@ -573,7 +565,7 @@ public class Figure implements IFigure {
 	/**
 	 * @see IFigure#getChildren()
 	 */
-	public List getChildren() {
+	public List<IFigure> getChildren() {
 		return children;
 	}
 
@@ -952,8 +944,7 @@ public class Figure implements IFigure {
 	 */
 	public void invalidateTree() {
 		invalidate();
-		for (Iterator iter = children.iterator(); iter.hasNext();) {
-			IFigure child = (IFigure) iter.next();
+		for (IFigure child : children) {
 			child.invalidateTree();
 		}
 	}
@@ -1112,21 +1103,20 @@ public class Figure implements IFigure {
 	 * @since 2.0
 	 */
 	protected void paintChildren(Graphics graphics) {
-		for (int i = 0; i < children.size(); i++) {
-			IFigure child = (IFigure) children.get(i);
+		for (IFigure child : children) {
 			if (child.isVisible()) {
 				// determine clipping areas for child
-				Rectangle[] clipping = null;
+				Rectangle[] clipping;
 				if (clippingStrategy != null) {
 					clipping = clippingStrategy.getClip(child);
 				} else {
 					// default clipping behaviour is to clip at bounds
-					clipping = new Rectangle[] { child.getBounds() };
+					clipping = new Rectangle[]{child.getBounds()};
 				}
 				// child may now paint inside the clipping areas
-				for (int j = 0; j < clipping.length; j++) {
-					if (clipping[j].intersects(graphics.getClip(Rectangle.SINGLETON))) {
-						graphics.clipRect(clipping[j]);
+				for (Rectangle rectangle : clipping) {
+					if (rectangle.intersects(graphics.getClip(Rectangle.SINGLETON))) {
+						graphics.clipRect(rectangle);
 						child.paint(graphics);
 						graphics.restoreState();
 					}
@@ -1204,8 +1194,9 @@ public class Figure implements IFigure {
 			fireCoordinateSystemChanged();
 			return;
 		}
-		for (int i = 0; i < children.size(); i++)
-			((IFigure) children.get(i)).translate(dx, dy);
+		for (IFigure child : children) {
+			child.translate(dx, dy);
+		}
 	}
 
 	/**
@@ -1238,9 +1229,9 @@ public class Figure implements IFigure {
 	 * @since 2.0
 	 */
 	public void removeAll() {
-		List list = new ArrayList(getChildren());
-		for (int i = 0; i < list.size(); i++) {
-			remove((IFigure) list.get(i));
+		List<IFigure> list = new ArrayList<>(getChildren());
+		for (IFigure iFigure : list) {
+			remove(iFigure);
 		}
 	}
 
@@ -1332,8 +1323,9 @@ public class Figure implements IFigure {
 	 * Called prior to this figure's removal from its parent
 	 */
 	public void removeNotify() {
-		for (int i = 0; i < children.size(); i++)
-			((IFigure) children.get(i)).removeNotify();
+		for (IFigure child : children) {
+			child.removeNotify();
+		}
 		if (internalGetEventDispatcher() != null)
 			internalGetEventDispatcher().requestRemoveFocus(this);
 		setFlag(FLAG_REALIZED, false);
@@ -1832,8 +1824,9 @@ public class Figure implements IFigure {
 			return;
 		setValid(true);
 		layout();
-		for (int i = 0; i < children.size(); i++)
-			((IFigure) children.get(i)).validate();
+		for (IFigure child : children) {
+			child.validate();
+		}
 	}
 
 	/**
@@ -1933,7 +1926,7 @@ public class Figure implements IFigure {
 	 * Iterates over a Figure's children.
 	 */
 	public static class FigureIterator {
-		private List list;
+		private List<IFigure> list;
 		private int index;
 
 		/**
@@ -1952,7 +1945,7 @@ public class Figure implements IFigure {
 		 * @return The next Figure
 		 */
 		public IFigure nextFigure() {
-			return (IFigure) list.get(--index);
+			return list.get(--index);
 		}
 
 		/**

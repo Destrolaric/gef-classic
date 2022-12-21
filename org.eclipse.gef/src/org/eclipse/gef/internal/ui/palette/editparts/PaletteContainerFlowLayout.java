@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.gef.internal.ui.palette.editparts;
 
-import java.util.List;
-
 import org.eclipse.draw2d.FlowLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.List;
 
 /**
  * Extends <code>FlowLayout</code> to allow the pane of a pinnable stack in icon
@@ -54,13 +54,13 @@ public class PaletteContainerFlowLayout extends FlowLayout {
 
 		Dimension prefSize = super.calculatePreferredSize(container, wHint, hHint);
 
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		IFigure child;
 
 		// Build the sizes for each row, and update prefSize accordingly
 		Dimension expandedPaneSize = null;
 		for (int i = 0; i < children.size(); i++) {
-			child = (IFigure) children.get(i);
+			child = children.get(i);
 
 			if (child instanceof PinnablePaletteStackFigure && ((PinnablePaletteStackFigure) child).isExpanded()) {
 

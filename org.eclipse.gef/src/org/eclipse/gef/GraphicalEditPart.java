@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.gef;
 
-import java.util.List;
-
 import org.eclipse.draw2d.IFigure;
+
+import java.util.List;
 
 /**
  * A Specialization of {@link EditPart} for use with {@link GraphicalViewer
@@ -50,7 +50,7 @@ public interface GraphicalEditPart extends EditPart {
 	 * 
 	 * @return the source connections
 	 */
-	List getSourceConnections();
+	List<ConnectionEditPart> getSourceConnections();
 
 	/**
 	 * Returns the <i>target</i> connections for this GraphicalEditPart. This method
@@ -59,7 +59,7 @@ public interface GraphicalEditPart extends EditPart {
 	 * 
 	 * @return the target connections
 	 */
-	List getTargetConnections();
+	List<ConnectionEditPart> getTargetConnections();
 
 	/**
 	 * The Figure into which childrens' Figures will be added. May return the same

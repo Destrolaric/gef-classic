@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.gef.internal.ui.palette.editparts;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Special FlowLayout to display the palette in the columns view.
@@ -65,9 +65,9 @@ public class ColumnsLayout extends PaletteContainerFlowLayout {
 	private Dimension getMinimumHints(IFigure figure, int wHint, int hHint) {
 		if (cachedConstraint == null) {
 			cachedConstraint = defaultConstraint.getCopy();
-			List children = figure.getParent().getChildren();
-			for (Iterator iter = children.iterator(); iter.hasNext();) {
-				IFigure child = (IFigure) iter.next();
+			List<IFigure> children = figure.getParent().getChildren();
+			for (Iterator<IFigure> iter = children.iterator(); iter.hasNext();) {
+				IFigure child = iter.next();
 				Dimension childSize = (child instanceof PinnablePaletteStackFigure)
 						? ((PinnablePaletteStackFigure) child).getHeaderPreferredSize(cachedConstraint.width,
 								cachedConstraint.height)

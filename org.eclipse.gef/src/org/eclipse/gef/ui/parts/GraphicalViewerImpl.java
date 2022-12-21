@@ -10,16 +10,19 @@
  *******************************************************************************/
 package org.eclipse.gef.ui.parts;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.draw2d.ExclusionSearch;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.*;
+import org.eclipse.gef.editparts.LayerManager;
+import org.eclipse.gef.editparts.ScalableRootEditPart;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceAdapter;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DropTargetAdapter;
-import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -29,30 +32,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-
-import org.eclipse.draw2d.ExclusionSearch;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.geometry.Point;
-
-import org.eclipse.gef.AccessibleEditPart;
-import org.eclipse.gef.EditDomain;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.ExposeHelper;
-import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.Handle;
-import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.MouseWheelHandler;
-import org.eclipse.gef.MouseWheelHelper;
-import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.editparts.LayerManager;
-import org.eclipse.gef.editparts.ScalableRootEditPart;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * An EditPartViewer implementation based on {@link org.eclipse.draw2d.IFigure
@@ -138,7 +120,7 @@ public class GraphicalViewerImpl extends AbstractEditPartViewer implements Graph
 		LayerManager layermanager = (LayerManager) getEditPartRegistry().get(LayerManager.ID);
 		if (layermanager == null)
 			return null;
-		List list = new ArrayList(3);
+		List<IFigure> list = new ArrayList<>(3);
 		list.add(layermanager.getLayer(LayerConstants.PRIMARY_LAYER));
 		list.add(layermanager.getLayer(LayerConstants.CONNECTION_LAYER));
 		list.add(layermanager.getLayer(LayerConstants.FEEDBACK_LAYER));
@@ -161,7 +143,7 @@ public class GraphicalViewerImpl extends AbstractEditPartViewer implements Graph
 			public boolean accept(IFigure figure) {
 				EditPart editpart = null;
 				while (editpart == null && figure != null) {
-					editpart = (EditPart) getVisualPartMap().get(figure);
+					editpart = getVisualPartMap().get(figure);
 					figure = figure.getParent();
 				}
 				return editpart != null && (condition == null || condition.evaluate(editpart));
@@ -171,7 +153,7 @@ public class GraphicalViewerImpl extends AbstractEditPartViewer implements Graph
 				new ConditionalTreeSearch(exclude));
 		EditPart part = null;
 		while (part == null && figure != null) {
-			part = (EditPart) getVisualPartMap().get(figure);
+			part = getVisualPartMap().get(figure);
 			figure = figure.getParent();
 		}
 		if (part == null)
