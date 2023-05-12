@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.draw2d.examples.tree;
 
-import java.util.List;
-
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Transposer;
+
+import java.util.List;
 
 /**
  * 
@@ -64,7 +65,7 @@ public abstract class BranchLayout extends AbstractLayout {
 		return preferredRowHeights;
 	}
 
-	List getSubtrees() {
+	List<IFigure> getSubtrees() {
 		return branch.getContentsPane().getChildren();
 	}
 

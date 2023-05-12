@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.beans.PropertyChangeListener;
-import java.util.Collection;
-import java.util.List;
-
+import org.eclipse.draw2d.geometry.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.draw2d.geometry.Translatable;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A lightweight graphical object. Figures are rendered to a {@link Graphics}
@@ -292,7 +287,7 @@ public interface IFigure {
 	 * 
 	 * @return An unmodifiable list of children by reference
 	 */
-	List getChildren();
+	List<IFigure> getChildren();
 
 	/**
 	 * Returns the rectangular area within this Figure's bounds in which children

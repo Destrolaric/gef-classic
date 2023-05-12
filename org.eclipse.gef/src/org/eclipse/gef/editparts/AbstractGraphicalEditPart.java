@@ -10,35 +10,16 @@
  *******************************************************************************/
 package org.eclipse.gef.editparts;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.swt.accessibility.ACC;
-import org.eclipse.swt.accessibility.AccessibleControlEvent;
-
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.*;
+import org.eclipse.swt.accessibility.ACC;
+import org.eclipse.swt.accessibility.AccessibleControlEvent;
 
-import org.eclipse.gef.AccessibleAnchorProvider;
-import org.eclipse.gef.AccessibleEditPart;
-import org.eclipse.gef.AccessibleHandleProvider;
-import org.eclipse.gef.ConnectionEditPart;
-import org.eclipse.gef.DragTracker;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
-import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.NodeListener;
-import org.eclipse.gef.Request;
+import java.util.*;
 
 /**
  * Default implementation for {@link org.eclipse.gef.GraphicalEditPart}.
@@ -57,12 +38,12 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	/**
 	 * List of <i>source</i> ConnectionEditParts
 	 */
-	protected List sourceConnections;
+	protected List<ConnectionEditPart> sourceConnections;
 
 	/**
 	 * List of <i>source</i> ConnectionEditParts
 	 */
-	protected List targetConnections;
+	protected List<ConnectionEditPart> targetConnections;
 
 	/**
 	 * A default implementation of {@link AccessibleEditPart}. Subclasses can extend
@@ -89,7 +70,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 				AccessibleEditPart access = part.getAdapter(AccessibleEditPart.class);
 				if (access == null)
 					return; // fail if any children aren't accessible.
-				children[i] = Integer.valueOf(access.getAccessibleID());
+				children[i] = access.getAccessibleID();
 			}
 			e.children = children;
 		}
@@ -135,8 +116,8 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	 * @since 2.0
 	 */
 	protected class DefaultAccessibleAnchorProvider implements AccessibleAnchorProvider {
-		private List getDefaultLocations() {
-			List list = new ArrayList();
+		private List<Point> getDefaultLocations() {
+			List<Point> list = new ArrayList<>();
 			Rectangle r = getFigure().getBounds();
 			Point p = r.getTopRight().translate(-1, r.height / 3);
 			getFigure().translateToAbsolute(p);
@@ -187,9 +168,10 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	 */
 	public void activate() {
 		super.activate();
-		List l = getSourceConnections();
-		for (int i = 0; i < l.size(); i++)
-			((EditPart) l.get(i)).activate();
+		List<ConnectionEditPart> l = getSourceConnections();
+		for (ConnectionEditPart connectionEditPart : l) {
+			connectionEditPart.activate();
+		}
 	}
 
 	/**
@@ -214,13 +196,12 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	 */
 	public void addNotify() {
 		super.addNotify();
-		List conns;
-		conns = getSourceConnections();
-		for (int i = 0; i < conns.size(); i++)
-			((ConnectionEditPart) conns.get(i)).setSource(this);
-		conns = getTargetConnections();
-		for (int i = 0; i < conns.size(); i++)
-			((ConnectionEditPart) conns.get(i)).setTarget(this);
+		for (ConnectionEditPart connectionEditPart : getSourceConnections()) {
+			connectionEditPart.setSource(this);
+		}
+		for (ConnectionEditPart conn : getTargetConnections()) {
+			conn.setTarget(this);
+		}
 	}
 
 	/**
@@ -331,9 +312,10 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	 * @see org.eclipse.gef.EditPart#deactivate()
 	 */
 	public void deactivate() {
-		List l = getSourceConnections();
-		for (int i = 0; i < l.size(); i++)
-			((EditPart) l.get(i)).deactivate();
+		List<ConnectionEditPart> l = getSourceConnections();
+		for (ConnectionEditPart connectionEditPart : l) {
+			connectionEditPart.deactivate();
+		}
 
 		super.deactivate();
 	}
@@ -350,7 +332,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		if (eventListeners == null)
 			return;
 		Iterator listeners = eventListeners.getListeners(NodeListener.class);
-		NodeListener listener = null;
+		NodeListener listener;
 		while (listeners.hasNext()) {
 			listener = (NodeListener) listeners.next();
 			listener.removingSourceConnection(connection, index);
@@ -369,7 +351,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		if (eventListeners == null)
 			return;
 		Iterator listeners = eventListeners.getListeners(NodeListener.class);
-		NodeListener listener = null;
+		NodeListener listener;
 		while (listeners.hasNext()) {
 			listener = (NodeListener) listeners.next();
 			listener.removingTargetConnection(connection, index);
@@ -388,7 +370,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		if (eventListeners == null)
 			return;
 		Iterator listeners = eventListeners.getListeners(NodeListener.class);
-		NodeListener listener = null;
+		NodeListener listener;
 		while (listeners.hasNext()) {
 			listener = (NodeListener) listeners.next();
 			listener.sourceConnectionAdded(connection, index);
@@ -407,7 +389,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		if (eventListeners == null)
 			return;
 		Iterator listeners = eventListeners.getListeners(NodeListener.class);
-		NodeListener listener = null;
+		NodeListener listener;
 		while (listeners.hasNext()) {
 			listener = (NodeListener) listeners.next();
 			listener.targetConnectionAdded(connection, index);
@@ -513,18 +495,18 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	/**
 	 * @see org.eclipse.gef.GraphicalEditPart#getSourceConnections()
 	 */
-	public List getSourceConnections() {
+	public List<ConnectionEditPart> getSourceConnections() {
 		if (sourceConnections == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		return sourceConnections;
 	}
 
 	/**
 	 * @see org.eclipse.gef.GraphicalEditPart#getTargetConnections()
 	 */
-	public List getTargetConnections() {
+	public List<ConnectionEditPart> getTargetConnections() {
 		if (targetConnections == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		return targetConnections;
 	}
 
@@ -549,7 +531,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	 */
 	protected void primAddSourceConnection(ConnectionEditPart connection, int index) {
 		if (sourceConnections == null)
-			sourceConnections = new ArrayList();
+			sourceConnections = new ArrayList<>();
 		sourceConnections.add(index, connection);
 	}
 
@@ -564,7 +546,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 	 */
 	protected void primAddTargetConnection(ConnectionEditPart connection, int index) {
 		if (targetConnections == null)
-			targetConnections = new ArrayList();
+			targetConnections = new ArrayList<>();
 		targetConnections.add(index, connection);
 	}
 
@@ -626,13 +608,13 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		ConnectionEditPart editPart;
 		Object model;
 
-		List sourceConnections = getSourceConnections();
+		List<ConnectionEditPart> sourceConnections = getSourceConnections();
 		int size = sourceConnections.size();
-		Map modelToEditPart = Collections.EMPTY_MAP;
+		Map<Object, ConnectionEditPart> modelToEditPart = Collections.emptyMap();
 		if (size > 0) {
-			modelToEditPart = new HashMap(size);
+			modelToEditPart = new HashMap<>(size);
 			for (i = 0; i < size; i++) {
-				editPart = (ConnectionEditPart) sourceConnections.get(i);
+				editPart = sourceConnections.get(i);
 				modelToEditPart.put(editPart.getModel(), editPart);
 			}
 		}
@@ -644,10 +626,10 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		for (i = 0; i < modelObjects.size(); i++) {
 			model = modelObjects.get(i);
 
-			if (i < sourceConnections.size() && ((EditPart) sourceConnections.get(i)).getModel() == model)
+			if (i < sourceConnections.size() && sourceConnections.get(i).getModel() == model)
 				continue;
 
-			editPart = (ConnectionEditPart) modelToEditPart.get(model);
+			editPart = modelToEditPart.get(model);
 			if (editPart != null)
 				reorderSourceConnection(editPart, i);
 			else {
@@ -659,11 +641,11 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		// Remove the remaining EditParts
 		size = sourceConnections.size();
 		if (i < size) {
-			List trash = new ArrayList(size - i);
+			List<ConnectionEditPart> trash = new ArrayList<>(size - i);
 			for (; i < size; i++)
 				trash.add(sourceConnections.get(i));
 			for (i = 0; i < trash.size(); i++)
-				removeSourceConnection((ConnectionEditPart) trash.get(i));
+				removeSourceConnection(trash.get(i));
 		}
 	}
 
@@ -687,13 +669,13 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		ConnectionEditPart editPart;
 		Object model;
 
-		List targetConnections = getTargetConnections();
+		List<ConnectionEditPart> targetConnections = getTargetConnections();
 		int size = targetConnections.size();
-		Map modelToEditPart = Collections.EMPTY_MAP;
+		Map<Object, EditPart> modelToEditPart = Collections.emptyMap();
 		if (size > 0) {
-			modelToEditPart = new HashMap(size);
+			modelToEditPart = new HashMap<>(size);
 			for (i = 0; i < size; i++) {
-				editPart = (ConnectionEditPart) targetConnections.get(i);
+				editPart = targetConnections.get(i);
 				modelToEditPart.put(editPart.getModel(), editPart);
 			}
 		}
@@ -705,7 +687,7 @@ public abstract class AbstractGraphicalEditPart extends AbstractEditPart impleme
 		for (i = 0; i < modelObjects.size(); i++) {
 			model = modelObjects.get(i);
 
-			if (i < targetConnections.size() && ((EditPart) targetConnections.get(i)).getModel() == model)
+			if (i < targetConnections.size() && targetConnections.get(i).getModel() == model)
 				continue;
 
 			editPart = (ConnectionEditPart) modelToEditPart.get(model);

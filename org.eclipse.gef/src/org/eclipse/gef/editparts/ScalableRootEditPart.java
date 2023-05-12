@@ -10,27 +10,15 @@
  *******************************************************************************/
 package org.eclipse.gef.editparts;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Layer;
-import org.eclipse.draw2d.LayeredPane;
-import org.eclipse.draw2d.ScalableFigure;
-import org.eclipse.draw2d.ScalableLayeredPane;
-import org.eclipse.draw2d.StackLayout;
-import org.eclipse.draw2d.Viewport;
+import org.eclipse.draw2d.*;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-
-import org.eclipse.gef.AutoexposeHelper;
-import org.eclipse.gef.DragTracker;
-import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.Request;
-import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.*;
 import org.eclipse.gef.tools.MarqueeDragTracker;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * A graphical root composed of regular {@link org.eclipse.draw2d.Layer Layers}.
@@ -112,7 +100,7 @@ public class ScalableRootEditPart extends SimpleRootEditPart implements LayerCon
 		public Dimension getPreferredSize(int wHint, int hHint) {
 			Rectangle rect = new Rectangle();
 			for (int i = 0; i < getChildren().size(); i++)
-				rect.union(((IFigure) getChildren().get(i)).getBounds());
+				rect.union(getChildren().get(i).getBounds());
 			return rect.getSize();
 		}
 

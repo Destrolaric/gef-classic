@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.draw2d.examples.tree;
 
-import java.util.*;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Viewport;
-import org.eclipse.draw2d.geometry.*;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.*;
 
 /**
  * @author hudsonr Created on Apr 28, 2003
@@ -86,7 +87,7 @@ public class Animation {
 			return false;
 		}
 		List target = (List) finalStates.get(container);
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		Rectangle rect1, rect2;
 		for (int i = 0; i < children.size(); i++) {
 			IFigure child = (IFigure) children.get(i);
@@ -102,26 +103,24 @@ public class Animation {
 	}
 
 	static void recordFinalStates(IFigure container) {
-		List list = new ArrayList();
+		List<Rectangle> list = new ArrayList<>();
 		finalStates.put(container, list);
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		list.clear();
-		for (int i = 0; i < children.size(); i++)
-			list.add(((IFigure) children.get(i)).getBounds().getCopy());
+		for (IFigure child : children) list.add(child.getBounds().getCopy());
 	}
 
 	static void recordInitialState(IFigure container) {
 		if (!RECORDING)
 			return;
-		List list = (List) initialStates.get(container);
+		List<Rectangle> list = (List)initialStates.get(container);
 		if (list != null)
 			return;
 //		System.out.println("Error recording initial state");
-		initialStates.put(container, list = new ArrayList());
-		List children = container.getChildren();
+		initialStates.put(container, list = new ArrayList<>());
+		List<IFigure> children = container.getChildren();
 		list.clear();
-		for (int i = 0; i < children.size(); i++)
-			list.add(((IFigure) children.get(i)).getBounds().getCopy());
+		for (IFigure child : children) list.add(child.getBounds().getCopy());
 	}
 
 	static void swap() {

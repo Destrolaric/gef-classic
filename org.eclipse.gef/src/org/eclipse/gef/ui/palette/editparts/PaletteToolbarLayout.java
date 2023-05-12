@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.gef.ui.palette.editparts;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-
 import org.eclipse.gef.internal.ui.palette.editparts.DrawerFigure;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A ToolbarLayout-like layout for the palette. This layout only works when
@@ -43,7 +42,7 @@ public class PaletteToolbarLayout extends ToolbarLayout {
 	 * @see org.eclipse.draw2d.ToolbarLayout#layout(org.eclipse.draw2d.IFigure)
 	 */
 	public void layout(IFigure parent) {
-		List children = parent.getChildren();
+		List<IFigure> children = parent.getChildren();
 		List childrenGrabbingVertical = new ArrayList();
 		int numChildren = children.size();
 		Rectangle clientArea = parent.getClientArea();
@@ -66,7 +65,7 @@ public class PaletteToolbarLayout extends ToolbarLayout {
 		 * can be stretched/shrunk.
 		 */
 		for (int i = 0; i < numChildren; i++) {
-			IFigure child = (IFigure) children.get(i);
+			IFigure child = children.get(i);
 
 			prefSizes[i] = child.getPreferredSize(wHint, hHint);
 			minSizes[i] = child.getMinimumSize(wHint, hHint);

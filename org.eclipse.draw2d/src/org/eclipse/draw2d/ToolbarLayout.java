@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.List;
-
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.List;
 
 /**
  * Arranges figures in a single row or column. Orientation can be set to produce
@@ -123,7 +123,7 @@ public class ToolbarLayout extends OrderedLayout {
 				wHint = Math.max(0, wHint - insets.getWidth());
 		}
 
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		Dimension minSize = calculateChildrenSize(children, wHint, hHint, false);
 		// Do a second pass, if necessary
 		if (wHint >= 0 && minSize.width > wHint) {
@@ -165,7 +165,7 @@ public class ToolbarLayout extends OrderedLayout {
 				wHint = Math.max(0, wHint - insets.getWidth());
 		}
 
-		List children = container.getChildren();
+		List<IFigure> children = container.getChildren();
 		Dimension prefSize = calculateChildrenSize(children, wHint, hHint, true);
 		// Do a second pass, if necessary
 		if (wHint >= 0 && prefSize.width > wHint) {
@@ -256,7 +256,7 @@ public class ToolbarLayout extends OrderedLayout {
 	 * @see org.eclipse.draw2d.LayoutManager#layout(IFigure)
 	 */
 	public void layout(IFigure parent) {
-		List children = parent.getChildren();
+		List<IFigure> children = parent.getChildren();
 		int numChildren = children.size();
 		Rectangle clientArea = transposer.t(parent.getClientArea());
 		int x = clientArea.x;
@@ -296,7 +296,7 @@ public class ToolbarLayout extends OrderedLayout {
 		int prefMinSumHeight = 0;
 
 		for (int i = 0; i < numChildren; i++) {
-			child = (IFigure) children.get(i);
+			child = children.get(i);
 
 			prefSizes[i] = transposer.t(getChildPreferredSize(child, wHint, hHint));
 			minSizes[i] = transposer.t(getChildMinimumSize(child, wHint, hHint));
@@ -329,7 +329,7 @@ public class ToolbarLayout extends OrderedLayout {
 			int minWidth = minSizes[i].width;
 			Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
 
-			child = (IFigure) children.get(i);
+			child = children.get(i);
 			if (prefMinSumHeight != 0)
 				amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
 

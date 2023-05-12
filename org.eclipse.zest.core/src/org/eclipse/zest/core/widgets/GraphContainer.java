@@ -9,21 +9,7 @@
  ******************************************************************************/
 package org.eclipse.zest.core.widgets;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.eclipse.draw2d.Animation;
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.FreeformLayout;
-import org.eclipse.draw2d.FreeformViewport;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LayoutAnimator;
-import org.eclipse.draw2d.LineBorder;
-import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.ScrollPane;
-import org.eclipse.draw2d.Viewport;
+import org.eclipse.draw2d.*;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -32,12 +18,13 @@ import org.eclipse.zest.core.widgets.internal.AspectRatioFreeformLayer;
 import org.eclipse.zest.core.widgets.internal.ContainerFigure;
 import org.eclipse.zest.core.widgets.internal.ExpandGraphLabel;
 import org.eclipse.zest.core.widgets.internal.ZestRootLayer;
-import org.eclipse.zest.layouts.InvalidLayoutConfiguration;
-import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.LayoutEntity;
-import org.eclipse.zest.layouts.LayoutRelationship;
-import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.*;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A Container than can be added to a Graph. Nodes can be added to this
@@ -135,9 +122,8 @@ public class GraphContainer extends GraphNode implements IContainer {
 		scrollPane.setVisible(false);
 		// setSize(expandGraphLabel.getSize().width,
 		// expandGraphLabel.getSize().height);
-		List children = this.zestLayer.getChildren();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-			IFigure child = (IFigure) iterator.next();
+		List<IFigure> children = this.zestLayer.getChildren();
+		for (IFigure child : children) {
 			GraphItem item = getGraph().getGraphItem(child);
 			item.setVisible(false);
 		}
@@ -307,9 +293,8 @@ public class GraphContainer extends GraphNode implements IContainer {
 		// expandGraphLabel.getSize().height + expandedHeight -
 		// SUBLAYER_OFFSET);
 
-		List children = this.zestLayer.getChildren();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-			IFigure child = (IFigure) iterator.next();
+		List<IFigure> children = this.zestLayer.getChildren();
+		for (IFigure child : children) {
 			GraphItem item = getGraph().getGraphItem(child);
 			item.setVisible(true);
 		}

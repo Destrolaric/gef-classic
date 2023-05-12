@@ -11,28 +11,11 @@
 
 package org.eclipse.gef.internal.ui.palette.editparts;
 
-import java.util.Iterator;
-
-import org.eclipse.draw2d.AbstractLayout;
-import org.eclipse.draw2d.Animation;
-import org.eclipse.draw2d.BorderLayout;
-import org.eclipse.draw2d.ButtonModel;
-import org.eclipse.draw2d.ChangeEvent;
-import org.eclipse.draw2d.ChangeListener;
-import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FlowLayout;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.StackLayout;
-import org.eclipse.draw2d.Toggle;
-import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.*;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
-
 import org.eclipse.gef.internal.ui.palette.PaletteColorUtil;
 import org.eclipse.gef.internal.ui.palette.editparts.ToolEntryEditPart.ToolEntryToggle;
 import org.eclipse.gef.ui.palette.PaletteViewerPreferences;
@@ -260,14 +243,14 @@ public class PinnablePaletteStackFigure extends Figure {
 					boolean collapseOtherStacks = (layoutMode == PaletteViewerPreferences.LAYOUT_COLUMNS
 							|| layoutMode == PaletteViewerPreferences.LAYOUT_ICONS);
 
-					for (Iterator iterator = getParent().getChildren().iterator(); iterator.hasNext();) {
-						Object childFigure = iterator.next();
+					for (IFigure childFigure : getParent().getChildren()) {
 						if (childFigure instanceof PinnablePaletteStackFigure
-								&& childFigure != PinnablePaletteStackFigure.this) {
+							&& childFigure != PinnablePaletteStackFigure.this) {
 
-							if (collapseOtherStacks || (((PinnablePaletteStackFigure) childFigure).isExpanded()
-									&& !((PinnablePaletteStackFigure) childFigure).isPinnedOpen())) {
-
+							if (collapseOtherStacks
+								|| (((PinnablePaletteStackFigure) childFigure)
+								.isExpanded() && !((PinnablePaletteStackFigure) childFigure)
+								.isPinnedOpen())) {
 								((PinnablePaletteStackFigure) childFigure).setExpanded(false);
 							}
 						}

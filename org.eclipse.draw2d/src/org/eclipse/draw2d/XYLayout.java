@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Map;
-
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class implements the {@link org.eclipse.draw2d.LayoutManager} interface
@@ -42,9 +41,7 @@ public class XYLayout extends AbstractLayout {
 	 */
 	protected Dimension calculatePreferredSize(IFigure f, int wHint, int hHint) {
 		Rectangle rect = new Rectangle();
-		ListIterator children = f.getChildren().listIterator();
-		while (children.hasNext()) {
-			IFigure child = (IFigure) children.next();
+		for (IFigure child : f.getChildren()) {
 			Rectangle r = (Rectangle) constraints.get(child);
 			if (r == null)
 				continue;

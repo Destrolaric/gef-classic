@@ -320,11 +320,11 @@ public class DrawerFigure extends Figure {
 		 * (in which case, the scrollbars cover up the entire available space).
 		 */
 		if (isExpanded()) {
-			List children = getContentPane().getChildren();
+			List<IFigure> children = getContentPane().getChildren();
 			if (!children.isEmpty()) {
 				Dimension result = collapseToggle.getPreferredSize(wHint, hHint).getCopy();
 				result.height += getContentPane().getInsets().getHeight();
-				IFigure child = (IFigure) children.get(0);
+				IFigure child = children.get(0);
 				result.height += Math.min(80, child.getPreferredSize(wHint, -1).height + 9);
 				return result.intersect(getPreferredSize(wHint, hHint));
 			}
@@ -351,7 +351,8 @@ public class DrawerFigure extends Figure {
 				remove(scrollpane);
 
 			// collapse all pinnable palette stack children that aren't pinned
-			for (Iterator iterator = getContentPane().getChildren().iterator(); iterator.hasNext();) {
+			for (Iterator<IFigure> iterator = getContentPane().getChildren().iterator(); iterator
+				.hasNext();) {
 				Object child = iterator.next();
 				if (child instanceof PinnablePaletteStackFigure
 						&& !((PinnablePaletteStackFigure) child).isPinnedOpen()) {

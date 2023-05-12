@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
-import java.util.Iterator;
-
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -44,8 +42,7 @@ public abstract class AbstractPointListShape extends Shape {
 	 *         figures
 	 */
 	protected boolean childrenContainsPoint(int x, int y) {
-		for (Iterator it = getChildren().iterator(); it.hasNext();) {
-			IFigure nextChild = (IFigure) it.next();
+		for (IFigure nextChild : getChildren()) {
 			if (nextChild.containsPoint(x, y)) {
 				return true;
 			}

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.draw2d.text;
 
-import java.util.List;
-
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
+
+import java.util.List;
 
 /**
  * A layout for FlowFigures with children.
@@ -105,9 +106,9 @@ public abstract class FlowContainerLayout extends FlowFigureLayout implements Fl
 	 * Layout all children.
 	 */
 	protected void layoutChildren() {
-		List children = getFlowFigure().getChildren();
-		for (int i = 0; i < children.size(); i++) {
-			Figure f = (Figure) children.get(i);
+		List<IFigure> children = getFlowFigure().getChildren();
+		for (IFigure child : children) {
+			Figure f = (Figure) child;
 			if (forceChildInvalidation(f))
 				f.invalidate();
 			f.validate();

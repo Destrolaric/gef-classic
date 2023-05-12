@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.draw2d;
 
+import org.eclipse.draw2d.geometry.Dimension;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.eclipse.draw2d.geometry.Dimension;
 
 /**
  * Figures using a DelegatingLayout as their layout manager give location
@@ -38,10 +38,9 @@ public class DelegatingLayout extends AbstractLayout {
 	 * @since 2.0
 	 */
 	protected Dimension calculatePreferredSize(IFigure parent, int wHint, int hHint) {
-		List children = parent.getChildren();
+		List<IFigure> children = parent.getChildren();
 		Dimension d = new Dimension();
-		for (int i = 0; i < children.size(); i++) {
-			IFigure child = (IFigure) children.get(i);
+		for (IFigure child : children) {
 			d.union(child.getPreferredSize());
 		}
 		return d;
@@ -62,9 +61,8 @@ public class DelegatingLayout extends AbstractLayout {
 	 * @param parent the figure whose children should be layed out
 	 */
 	public void layout(IFigure parent) {
-		List children = parent.getChildren();
-		for (int i = 0; i < children.size(); i++) {
-			IFigure child = (IFigure) children.get(i);
+		List<IFigure> children = parent.getChildren();
+		for (IFigure child : children) {
 			Locator locator = (Locator) constraints.get(child);
 			if (locator != null) {
 				locator.relocate(child);

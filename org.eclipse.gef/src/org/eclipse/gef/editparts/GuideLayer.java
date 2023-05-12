@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.gef.editparts;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This is a layer where the guide lines are displayed. The figures in this
@@ -67,9 +67,9 @@ public class GuideLayer extends FreeformLayer {
 		 * expanded by 5, the bounds do not go into the negative (unless necessary).
 		 */
 		int maxX = 5, minX = 5, maxY = 5, minY = 5;
-		Iterator children = getChildren().iterator();
+		Iterator<IFigure> children = getChildren().iterator();
 		while (children.hasNext()) {
-			IFigure child = (IFigure) children.next();
+			IFigure child = children.next();
 			Boolean isHorizontal = (Boolean) getConstraint(child);
 			if (isHorizontal != null) {
 				if (isHorizontal.booleanValue()) {
@@ -112,9 +112,9 @@ public class GuideLayer extends FreeformLayer {
 	 */
 	public void setBounds(Rectangle rect) {
 		super.setBounds(rect);
-		Iterator children = getChildren().iterator();
+		Iterator<IFigure> children = getChildren().iterator();
 		while (children.hasNext()) {
-			IFigure child = (IFigure) children.next();
+			IFigure child = children.next();
 			Boolean isHorizontal = (Boolean) getConstraint(child);
 			if (isHorizontal != null) {
 				if (isHorizontal.booleanValue()) {

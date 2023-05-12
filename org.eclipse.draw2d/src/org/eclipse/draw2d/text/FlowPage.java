@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.draw2d.text;
 
-import java.util.List;
-
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+
+import java.util.List;
 
 /**
  * The root of a Flow hierarchy. A flow page can be treated as a normal figure,
@@ -103,9 +104,8 @@ public class FlowPage extends BlockFlow {
 		Rectangle r = getBlockBox().toRectangle();
 		pageSize.width = r.width;
 		pageSize.height = r.height;
-		List v = getChildren();
-		for (int i = 0; i < v.size(); i++)
-			((FlowFigure) v.get(i)).postValidate();
+		List<IFigure> v = getChildren();
+		for (IFigure iFigure : v) ((FlowFigure) iFigure).postValidate();
 	}
 
 	/**

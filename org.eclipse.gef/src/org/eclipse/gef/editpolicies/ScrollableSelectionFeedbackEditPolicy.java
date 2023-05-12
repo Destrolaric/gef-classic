@@ -11,33 +11,23 @@
  */
 package org.eclipse.gef.editpolicies;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.draw2d.FigureListener;
-import org.eclipse.draw2d.GhostImageFigure;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.IScrollableFigure;
-import org.eclipse.draw2d.LayoutListener;
-import org.eclipse.draw2d.ScrollPane;
-import org.eclipse.draw2d.Viewport;
-import org.eclipse.draw2d.ViewportUtilities;
+import org.eclipse.draw2d.*;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.IScrollableEditPart;
 import org.eclipse.gef.util.EditPartUtilities;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A {@link SelectionEditPolicy}, which may be registered to an
@@ -147,14 +137,11 @@ public class ScrollableSelectionFeedbackEditPolicy extends SelectionEditPolicy {
 	 * Creates the connection layer feedback figures.
 	 */
 	protected void createConnectionFeedbackFigures() {
-		HashSet transitiveNestedConnections = EditPartUtilities
+		Set<ConnectionEditPart> transitiveNestedConnections = EditPartUtilities
 				.getAllNestedConnectionEditParts((GraphicalEditPart) getHost());
 
-		for (Iterator iterator = transitiveNestedConnections.iterator(); iterator.hasNext();) {
-			Object connection = iterator.next();
-			if (connection instanceof ConnectionEditPart) {
-				createConnectionFeedbackFigure((ConnectionEditPart) connection);
-			}
+		for (ConnectionEditPart connection : transitiveNestedConnections) {
+			createConnectionFeedbackFigure(connection);
 
 		}
 	}
@@ -286,7 +273,8 @@ public class ScrollableSelectionFeedbackEditPolicy extends SelectionEditPolicy {
 				.equals(getAbsoluteViewportArea(((IScrollableFigure) getHostFigure()).getScrollPane().getViewport()));
 		// check if there is a connection exceeding the client area
 		boolean connectionLayerChildExceedsClientArea = false;
-		List connectionLayerChildren = getLayer(LayerConstants.CONNECTION_LAYER).getChildren();
+		List<IFigure> connectionLayerChildren = getLayer(LayerConstants.CONNECTION_LAYER).getChildren();
+
 		for (Iterator iterator = connectionLayerChildren.iterator(); iterator.hasNext()
 				&& !connectionLayerChildExceedsClientArea;) {
 			IFigure connectionLayerChild = (IFigure) iterator.next();
